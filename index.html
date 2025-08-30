@@ -1,108 +1,284 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Bastelideen Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-      transition: background 0.6s ease, color 0.6s ease;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-      border-radius: 10px;
-      border: none;
-      transition: all 0.3s ease;
-    }
-    #idee {
-      margin-top: 20px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bastelideen Generator ✨</title>
+    
+    <style>
+        :root {
+            --color-primary: #FF4500;
+            --color-secondary: #fff;
+            --font-family: 'Verdana', sans-serif;
+            --bg-color: linear-gradient(135deg, #FFD700, #FF6347);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            color: var(--color-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            background: var(--bg-color);
+            transition: background 1s ease-in-out;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            color: var(--color-primary);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #pre-greeting {
+            font-size: 1.2em;
+            margin-bottom: -5px;
+        }
+
+        #idea-box {
+            background-color: var(--color-secondary);
+            border-radius: 20px;
+            padding: 30px 20px;
+            margin-top: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #idea-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #idea {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--color-primary);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .star {
+            position: fixed;
+            font-size: 20px; /* Grösse der Emojis */
+            opacity: 0;
+            animation: shoot 1s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        #progress-container {
+            width: 80%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px auto;
+            overflow: hidden;
+            display: none;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--color-primary);
+            transition: width 0.8s ease-in-out;
+        }
+
+        #paint-splash {
+            position: absolute;
+            bottom: 20px;
+            width: 150px;
+            opacity: 0.8;
+            z-index: 0;
+            animation: float 5s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+    </style>
 </head>
 <body>
-  <h1>Bastelideen-Generator 🎨✂️</h1>
-  <button onclick="neueIdee()">Neue Idee anzeigen</button>
-  <div id="idee"></div>
 
-  <script>
-    const ideen = [
-      {
-        text: "Leinwand bemalen mit Acrylfarben",
-        style: "linear-gradient(to right, #ff6f61, #ffcc70)",
-        emoji: "🖌️🎨"
-      },
-      {
-        text: "Drying Clay - Dinos bemalen!",
-        style: "linear-gradient(to right, #228b22, #8b864e)",
-        emoji: "🦖🎨"
-      },
-      {
-        text: "Häkeln – kleine Figuren oder Topflappen?",
-        style: "linear-gradient(to right, #6dd5ed, #2193b0)",
-        emoji: "🧶✨"
-      },
-      {
-        text: "Kerzen gießen und verzieren",
-        style: "linear-gradient(to right, #f7971e, #ffd200)",
-        emoji: "🕯️🔥"
-      },
-      {
-        text: "Makramee knüpfen",
-        style: "linear-gradient(to right, #d9a7c7, #fffcdc)",
-        emoji: "🧵🌿"
-      },
-      {
-        text: "Seife selber machen",
-        style: "linear-gradient(to right, #56ccf2, #2f80ed)",
-        emoji: "🧼🌸"
-      },
-      {
-        text: "Scrapbook gestalten",
-        style: "linear-gradient(to right, #ff9a9e, #fecfef)",
-        emoji: "📒✂️"
-      },
-      {
-        text: "Origami falten",
-        style: "linear-gradient(to right, #a1ffce, #faffd1)",
-        emoji: "📐🕊️"
-      },
-      {
-        text: "Armbänder knüpfen",
-        style: "linear-gradient(to right, #ffecd2, #fcb69f)",
-        emoji: "📿❤️"
-      },
-      {
-        text: "Postkarten basteln",
-        style: "linear-gradient(to right, #f6d365, #fda085)",
-        emoji: "💌🎁"
-      },
-      {
-        text: "Laternen, Windlichter oder Kerzenlichter dekorieren",
-        style: "linear-gradient(to right, #e0c3fc, #8ec5fc)",
-        emoji: "🏮✨"
-      }
+    <div class="container">
+        <div id="welcome-message">
+            <h1>Happy Birthday Taylor! 🎉</h1>
+            <p>Wir freuen uns mit dir einen Bastelabend zu verbringen. Klicke auf den Button für Inspiration:</p>
+        </div>
+        
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        
+        <div id="idea-box">
+            <p id="idea">Klicke auf den Button, um die erste Idee zu sehen!</p>
+        </div>
+        <button id="generator-button">Neue Idee!</button>
+        
+        <img src="https://media0.giphy.com/media/06XUjSZhJdBSanD3dx/giphy.gif" id="paint-splash">
+    </div>
+
+<script>
+    const ideas = [
+        "Leinwände bemalen mit Acrylfarben 🎨",
+        "Drying Clay - kreiere und gestalte deinen eigenen Dino! 🦕",
+        "Häkeln – kleine Figuren, Topflappen oder Granny Squares? 🧶",
+        "Kerzen gießen und verzieren ✨",
+        "Makramee knüpfen - Blumenampeln, Schlüsselanhänger und vieles mehr! 🧵",
+        "Seife selbermachen - kreiere deinen eigenen Duft! 🧼",
+        "Süße Origami falten 📜",
+        "Armbänder machen, hehe 💎",
+        "(Post-)Karten basteln 💌",
+        "Laternen oder Windlichter dekorieren 🏮",
+        "Batiken - selbstgemachte Textilunikate🌺",
+        "Stoffbeutel bemalen - bag it easy👜"
     ];
 
-    let letzteIdee = null;
+    const colors = [
+        { primary: '#ff69b4', bg: 'linear-gradient(135deg, #f0e6f2, #f3e9f7)' },
+        { primary: '#1abc9c', bg: 'linear-gradient(135deg, #e8f8f5, #d1f2eb)' },
+        { primary: '#9b59b6', bg: 'linear-gradient(135deg, #f4ecf7, #e8daef)' },
+        { primary: '#3498db', bg: 'linear-gradient(135deg, #eaf2f8, #d4e6f1)' },
+        { primary: '#e74c3c', bg: 'linear-gradient(135deg, #fdedec, #fadbd8)' },
+        { primary: '#f1c40f', bg: 'linear-gradient(135deg, #fef9e7, #fcf3cf)' }
+    ];
 
-    function neueIdee() {
-      let zufall;
-      do {
-        zufall = Math.floor(Math.random() * ideen.length);
-      } while (zufall === letzteIdee);
+    const button = document.getElementById('generator-button');
+    const ideaText = document.getElementById('idea');
+    const ideaBox = document.getElementById('idea-box');
+    const root = document.documentElement;
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const body = document.body;
 
-      letzteIdee = zufall;
-      const idee = ideen[zufall];
+    let usedIdeas = [];
+    let lastColorIndex = -1;
 
-      document.getElementById("idee").innerText = idee.emoji + " " + idee.text;
-      document.body.style.background = idee.style;
+    button.addEventListener('click', () => {
+        progressBar.style.width = '0%';
+        progressContainer.style.display = 'block';
+
+        setTimeout(() => {
+            progressBar.style.width = '100%';
+        }, 10);
+
+        setTimeout(() => {
+            // Stern-Effekt über den ganzen Bildschirm
+            createStarEffect();
+
+            let nextIdea;
+            if (usedIdeas.length === ideas.length) {
+                usedIdeas = [];
+            }
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * ideas.length);
+            } while (usedIdeas.includes(randomIndex));
+            
+            usedIdeas.push(randomIndex);
+            nextIdea = ideas[randomIndex];
+
+            let colorIndex;
+            do {
+                colorIndex = Math.floor(Math.random() * colors.length);
+            } while (colorIndex === lastColorIndex);
+            lastColorIndex = colorIndex;
+
+            const selectedColor = colors[colorIndex];
+            
+            root.style.setProperty('--color-primary', selectedColor.primary);
+            root.style.setProperty('--bg-color', selectedColor.bg);
+            
+            ideaBox.classList.remove('show');
+            setTimeout(() => {
+                ideaText.textContent = nextIdea;
+                ideaBox.classList.add('show');
+                
+                progressContainer.style.display = 'none';
+                progressBar.style.width = '0%';
+            }, 800);
+        }, 500);
+    });
+
+    function createStarEffect() {
+        const numStars = 20;
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.textContent = '⭐'; // Hier wird das Emoji hinzugefügt
+            
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+
+            star.style.left = `${x}px`;
+            star.style.top = `${y}px`;
+            
+            body.appendChild(star);
+            
+            setTimeout(() => {
+                star.remove();
+            }, 1000);
+        }
     }
-  </script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        ideaBox.classList.add('show');
+    });
+</script>
+
 </body>
 </html>
